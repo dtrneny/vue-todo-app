@@ -1,7 +1,7 @@
 
 export interface Todo {
     title: string,
-    id: number,
-    priority: 'low' | 'high' | 'normal',
+    id: string,
+    priority: 'low' | 'normal' | 'high',
     finished: boolean
 }

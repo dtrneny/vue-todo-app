@@ -1,20 +1,19 @@
-<template>
-    <div>
-        <BasicButton text="test"></BasicButton>
-    </div>
-</template>
 
 <script lang="ts">
     import { defineComponent } from 'vue';
-    import BasicButton from './components/BasicButton.vue';
+    import TodosView from '@/views/TodosView.vue';
 
     export default defineComponent({
         name: 'App',
-        components: {BasicButton}
+        components: {TodosView}
     });
     
 </script>
 
+<template>
+    <TodosView />
+</template>
+
 <style lang="scss">
-@import './assets/main.scss';
+@import '@/assets/main.scss';
 </style>

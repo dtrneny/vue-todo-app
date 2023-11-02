@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "url": "^0.11.3",
+    "uuid": "^9.0.1",
     "vue": "^3.3.4"
   },
   "devDependencies": {
+    "@types/uuid": "^9.0.6",
     "@vitejs/plugin-vue": "^4.2.3",
     "sass": "^1.69.5",
     "typescript": "^5.0.2",
