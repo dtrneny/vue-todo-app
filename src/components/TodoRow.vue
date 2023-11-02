@@ -1,58 +1,52 @@
 
-<script lang="ts">
-    import { defineComponent, PropType } from 'vue';
+<script setup lang="ts">
+    import { PropType, computed } from 'vue';
     import { Todo } from '../types/Todo';
     import BasicButton from './BasicButton.vue';
 
-    export default defineComponent({
-        name: 'TodoRow',
-        components: {
-            BasicButton
-        },
-        props: {
-            todo: Object as PropType<Todo>
-        },
-        setup(props, context) {
+    const props = defineProps({
+        todo: Object as PropType<Todo>
+    });
 
-            function handleFinish() {
-                context.emit('onFinish', props.todo?.id);
-            }
+    const emits = defineEmits();
 
-            function handleDelete() {
-                context.emit('onDelete', props.todo?.id);
-            }
+    function handleFinish() {
+        emits('on-finish', props.todo?.id);
+    }
 
-            return {
-                handleFinish,
-                handleDelete
-            }
-        }
+    function handleDelete() {
+        emits('on-delete', props.todo?.id);
+    }
+
+    const rowClass = computed(() => {
+        return {
+            'todo-row': true,
+            'finished': props.todo?.finished,
+            [`priority-${props.todo?.priority}`]: true,
+        };
     })
 </script>
 
 <template>
-    <div :class="[
-        'todo-row', 
-        { 'finished': todo?.finished },
-        `priority-${todo?.priority}`
-    ]">
+
+    <div :class="rowClass">
         <p>{{ todo?.title }}</p>
         <div class="todo-buttons">
             <BasicButton 
-                v-show="!todo?.finished" 
+                v-if="!todo?.finished" 
                 text="Dokončit" 
                 buttonType="primary"
-                @onClick="handleFinish" />
+                @on-click="handleFinish" />
             <BasicButton 
                 text="Odstranit" 
                 buttonType="error"
-                @onClick="handleDelete" />
+                @on-click="handleDelete" />
         </div>
     </div>
+    
 </template>
 
 <style scoped lang="scss">
-@import '@/assets/main.scss';
 .todo-row {
     padding: 8px;
     margin-bottom: 10px;
@@ -62,21 +56,20 @@
 
     border-radius: $border-radius;
     
-
     &.finished {
         opacity: 0.5;
     }
 
     &.priority-low {
-        background-color: #b2dab2;
+        background-color: $todo-low-priority-color;
     }
 
     &.priority-normal {
-        background-color: #ebd2a9;
+        background-color: $todo-normal-priority-color;
     }
 
     &.priority-high {
-        background-color: #f39699;
+        background-color: $todo-high-priority-color;
     }
 }
 

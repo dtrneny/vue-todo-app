@@ -1,46 +1,45 @@
 
-<script lang="ts">
-    import { PropType, defineComponent } from 'vue';
+<script setup lang="ts">
+    import { PropType } from 'vue';
 
     enum ButtonVariant {
         Primary = 'primary',
-        Error = 'error',
+        Error = 'error'
     }
 
-    export default defineComponent({
-        name: 'BasicButton',
-        props: {
-            text: String,
-            buttonType: {
-                type: String as PropType<ButtonVariant>,
-                default: ButtonVariant.Primary,
-                validator: (value: ButtonVariant) => Object.values(ButtonVariant).includes(value)
-            },
-            isForSubmit: {
-                type: Boolean,
-                default: false
-            }
+    defineProps({
+        text: String,
+        buttonType: {
+            type: String as PropType<ButtonVariant>,
+            default: ButtonVariant.Primary,
+            validator: (value: ButtonVariant) => Object.values(ButtonVariant).includes(value)
         },
-        setup(_, context) {
-            function handleClick() {
-                context.emit('onClick')
-            }
-
-            return {
-                handleClick
-            }
+        submit: {
+            type: Boolean,
+            default: false
         }
-    })
+    });
+
+    const emits = defineEmits();
+
+    function handleClick() {
+        emits('on-click');
+    }
 </script>
 
 <template>
-    <button @click="handleClick" :class="buttonType" :type="isForSubmit ? 'submit' : 'button'">{{ text }}</button>
+
+    <button 
+        @click="handleClick" 
+        :class="buttonType" 
+        :type="submit ? 'submit' : 'button'">
+        {{ text }}
+    </button>
+    
 </template>
 
 <style scoped lang="scss">
 button {
-    @import '@/assets/main.scss';
-
     padding: 8px 16px;
     border-radius: $border-radius;
 

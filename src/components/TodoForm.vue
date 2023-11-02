@@ -1,64 +1,48 @@
 
-<script lang="ts">
-    import { defineComponent, watch, ref } from 'vue';
+<script setup lang="ts">
+    import { watch, ref } from 'vue';
     import { v4 as uuidv4 } from 'uuid';
-    import BasicButton from './BasicButton.vue';
-    import BasicInputField from './BasicInputField.vue';
-    import RadioButton from './RadioButton.vue';
     import { Todo } from '../types/Todo';
+    import BasicButton from './BasicButton.vue';
+    import InputField from './InputField.vue';
+    import RadioButton from './RadioButton.vue';
 
-    export default defineComponent({
-        name: 'TodoForm',
-        components: {
-            BasicButton,
-            BasicInputField,
-            RadioButton
-        },
-        setup(_, context) {
+    const emits = defineEmits();
 
-            const titleError = ref('');
-            const title = ref('')
-            const priority = ref('normal')
+    const titleError = ref('');
+    const title = ref('')
+    const priority = ref('normal')
 
-            watch(title, (newValue, oldValue) => {
-                if(!oldValue && newValue) titleError.value = ''
-            })
-
-            function handleSubmit() {
-
-                if (!title.value) {
-                    titleError.value = "Prosím vyplňte toto pole.";
-                    return
-                }
-
-                const newTodo: Todo = {
-                    title: title.value,
-                    id: uuidv4(),
-                    priority: priority.value as "low" | "normal" | "high",
-                    finished: false
-                }
-
-                context.emit('onSubmit', newTodo);
-            }
-
-            function handleCancel() {
-                context.emit('onCancel');
-            }
-
-            return {
-                title,
-                priority,
-                titleError,
-                handleSubmit,
-                handleCancel
-            }
-        }
+    watch(title, (newValue, oldValue) => {
+        if(!oldValue && newValue) titleError.value = '';
     })
+
+    function handleSubmit() {
+
+        if (!title.value) {
+            titleError.value = "Prosím vyplňte toto pole.";
+            return
+        }
+
+        const newTodo: Todo = {
+            title: title.value,
+            id: uuidv4(),
+            priority: priority.value as "low" | "normal" | "high",
+            finished: false
+        }
+
+        emits('on-submit', newTodo);
+    }
+
+    function handleCancel() {
+        emits('on-cancel');
+    }
 </script>
 
 <template>
+
     <form @submit.prevent="handleSubmit">
-        <BasicInputField 
+        <InputField 
             label="Název" 
             placeholder="Zadejte název úkolu"
             v-model="title"
@@ -85,33 +69,34 @@
 
         <div class="form-buttons">
             <BasicButton 
-                isForSubmit
+                submit
                 text="Přidat" 
                 buttonType="primary" />
             <BasicButton 
                 text="Zrušit" 
                 buttonType="error"
-                @onClick="handleCancel" />
+                @on-click="handleCancel" />
         </div>
     </form>
+    
 </template>
 
 <style scoped lang="scss">
-    form {
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    .form-radio-buttons {
         display: flex;
-        flex-direction: column;
-        gap: 15px;
+        flex-direction: inherit;
+        gap: 5px;
+    }
 
-        .form-radio-buttons {
-            display: flex;
-            flex-direction: inherit;
-            gap: 5px;
-        }
-
-        .form-buttons {
-            button {
-                margin: 5px;
-            }
+    .form-buttons {
+        button {
+            margin: 5px;
         }
     }
+}
 </style>

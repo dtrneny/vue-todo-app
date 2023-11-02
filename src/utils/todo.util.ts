@@ -1,3 +1,5 @@
+import { Todo } from "../types/Todo";
+
 export function getNumberFromPriority(priority: string) {
     switch (priority) {
         case "low":
@@ -10,3 +12,13 @@ export function getNumberFromPriority(priority: string) {
             return 0;
     }
 };
+
+export function getOrderedTodosByPriorityAndState(todos: Todo[]): Todo[] {
+    return todos.sort((todoA, todoB) => {
+        if (todoA.finished === todoB.finished) {
+            return getNumberFromPriority(todoB.priority) - getNumberFromPriority(todoA.priority);
+        }
+        
+        return todoA.finished ? 1 : -1;
+    });
+}

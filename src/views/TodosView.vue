@@ -1,120 +1,84 @@
 
-<script lang="ts">
-    import { defineComponent, ref, computed } from 'vue';
-
+<script setup lang="ts">
+    import { ref, computed } from 'vue';
+    import { todosMock } from '../data/todosMock';
+    import { Todo } from '../types/Todo';
+    import { getOrderedTodosByPriorityAndState } from '../utils/todo.util';
     import BasicButton from '@/components/BasicButton.vue';
     import TodoList from '@/components/TodoList.vue';
     import TodoForm from '@/components/TodoForm.vue';
     import CheckBox from '@/components/CheckBox.vue'
 
-    import { todosMock } from '../data/todosMock';
-    import { Todo } from '../types/Todo';
-    import { getNumberFromPriority } from '../utils/todo.util';
+    const isFormOpened = ref(false);
+    const finishedFilter = ref(false);
+    const todos = ref(todosMock);
 
-    export default defineComponent({
-        name: 'TodosView',
-        components: {
-            BasicButton,
-            TodoList,
-            TodoForm,
-            CheckBox
-        },
-        setup() {
+    function closeForm() {
+        isFormOpened.value = false;
+    }
 
-            const isFormOpened = ref(false);
-            const finishedFilter = ref(false);
-            const todos = ref(todosMock);
+    function openForm() {
+        isFormOpened.value = true;
+    }
 
-            function closeForm() {
-                isFormOpened.value = false;
-            }
+    function addNewTodo(newTodo: Todo) {
+        todos.value.push(newTodo);
+        isFormOpened.value = false;
+    }
 
-            function openForm() {
-                isFormOpened.value = true;
-            }
+    function deleteTodo(todoID: string) {
+        const removedIndex = todos.value.findIndex((todo) => todo.id === todoID);
+        if (removedIndex !== -1) todos.value.splice(removedIndex, 1);
+    }
 
-            function addNewTodo(newTodo: Todo) {
-                todos.value.push(newTodo);
-                isFormOpened.value = false;
-            }
+    function finishTodo(todoID: string) {
+        const editedTodo = todos.value.find((todo) => todo.id === todoID);
+        if (editedTodo) editedTodo.finished = true;
+    }
 
-            function deleteTodo(todoID: string) {
-                const removedIndex = todos.value.findIndex((todo) => todo.id === todoID);
-                if (removedIndex !== -1) {
-                    todos.value.splice(removedIndex, 1);
-                }
-            }
+    const presentedTodos = computed(() => {
+        const filteredTodos = finishedFilter.value 
+            ? todos.value.filter((todo) => !todo.finished) 
+            : todos.value;
 
-            function finishTodo(todoID: string) {
-                const editedTodo = todos.value.find((todo) => todo.id === todoID);
-                if (editedTodo) {
-                    editedTodo.finished = true;
-                }
-            }
-
-            const presentedTodos = computed(() => {
-                const filteredTodos = finishedFilter.value 
-                    ? todos.value.filter((todo) => !todo.finished) 
-                    : todos.value;
-
-                return filteredTodos.sort((todoA, todoB) => {
-                    if (todoA.finished === todoB.finished) {
-                        return getNumberFromPriority(todoB.priority) - getNumberFromPriority(todoA.priority);
-                    }
-                    
-                    return todoA.finished ? 1 : -1;
-                });
-            });
-
-            return { 
-                presentedTodos,
-                isFormOpened,
-                finishedFilter,
-                closeForm,
-                openForm,
-                addNewTodo, 
-                deleteTodo,
-                finishTodo
-            }
-        }
-    })
+        return getOrderedTodosByPriorityAndState(filteredTodos)
+    });
 </script>
 
 <template>
+
     <main>
         <h2>TODO App</h2>
-        
+
         <BasicButton 
             v-if="!isFormOpened" 
             text="Nový úkol" 
             buttonType="primary"
-            @onClick="openForm" />
-
+            @on-click="openForm" />
         <TodoForm 
             v-else
-            @onCancel="closeForm"
-            @onSubmit="addNewTodo" />
+            @on-cancel="closeForm"
+            @on-submit="addNewTodo" />
 
         <TodoList 
             v-if="presentedTodos.length > 0"
             :todos="presentedTodos"
-            @onDelete="deleteTodo"
-            @onFinish="finishTodo" />
+            @on-delete="deleteTodo"
+            @on-finish="finishTodo" />
         <p v-else>Aktuálně nemáte žádný úkol</p>
 
         <CheckBox
             label="Pouze nedokončené"
             v-model="finishedFilter" />
-        
     </main>
+
 </template>
 
 <style scoped lang="scss">
 @import '@/assets/main.scss';
 main {
     width: 50%;
-    height: 600px;
-    margin: 5% auto 0 auto;
+    height: 70%;
     padding: 30px;
 
     display: flex;

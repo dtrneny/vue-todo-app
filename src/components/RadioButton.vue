@@ -1,20 +1,16 @@
 
-<script lang="ts">
-    import { defineComponent } from 'vue';
-
-    export default defineComponent({
-        name: 'RadioButton',
-        props: {
-            label: String,
-            modelValue: String,
-            value: String,
-            checked: Boolean
-        }
-    })
+<script setup lang="ts">
+    defineProps({
+        label: String,
+        modelValue: String,
+        value: String,
+        checked: Boolean
+    });
 </script>
 
 <template>
-    <div>
+
+    <div class="radio-button-container">
         <input 
             type="radio"
             :value="modelValue"
@@ -22,8 +18,16 @@
             @input="$emit('update:modelValue', value)" />
         <label>{{ label }}</label>
     </div>
+
 </template>
 
 <style scoped lang="scss">
+    .radio-button-container {
+        display: flex;
+        gap: 5px;
 
+        input {
+            cursor: pointer;
+        }
+    }
 </style>

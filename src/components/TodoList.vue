@@ -1,49 +1,38 @@
 
-<script lang="ts">
-    import { defineComponent, PropType } from 'vue';
-    import TodoRow from './TodoRow.vue';
+<script setup lang="ts">
+    import { PropType } from 'vue';
     import { Todo } from '../types/Todo';
+    import TodoRow from './TodoRow.vue';
 
-    export default defineComponent({
-        name: 'TodoList',
-        components: {
-            TodoRow
-        },
-        props: {
-            todos: Object as PropType<Todo[]>
-        },
-        setup(_, context) {
+    defineProps({
+        todos: Object as PropType<Todo[]>
+    });
 
-            function onDelete(todoID: string) {
-                context.emit('onDelete', todoID)
-            }
+    const emits = defineEmits();
 
-            function onFinish(todoID: string) {
-                context.emit('onFinish', todoID)
-            }
+    function onDelete(todoID: string) {
+        emits('on-delete', todoID);
+    }
 
-            return {
-                onDelete,
-                onFinish
-            }
-        }
-    })
+    function onFinish(todoID: string) {
+        emits('on-finish', todoID);
+    }
+
 </script>
 
 <template>
+
     <section class="todo-list">
         <TodoRow 
             v-for="todo in todos" 
             :key="todo.id" 
             :todo="todo"
-            @onDelete="onDelete"
-            @onFinish="onFinish" />
+            @on-delete="onDelete"
+            @on-finish="onFinish" />
     </section>
+    
 </template>
 
 <style scoped lang="scss">
-.todo-list {
-    
-    overflow-y: scroll;
-}
+.todo-list { overflow-y: scroll; }
 </style>

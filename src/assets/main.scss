@@ -11,6 +11,10 @@ $error-color: #e74c3c;
 $error-secondary-color: #c0392b;
 $error-darker-color: #a5281b;
 
+$todo-low-priority-color: #b2dab2;
+$todo-normal-priority-color: #ebd2a9;
+$todo-high-priority-color: #f39699;
+
 $text-color: #242424;
 $text-light-color: #F1F1F1;
 
@@ -23,6 +27,16 @@ $border-radius: 4px;
 }
 
 *:focus { outline:none !important }
+
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 h2 {
   margin: 0;

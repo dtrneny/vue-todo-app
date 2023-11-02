@@ -1,17 +1,12 @@
 
-<script lang="ts">
-    import { defineComponent } from 'vue';
+<script setup lang="ts">
     import TodosView from '@/views/TodosView.vue';
-
-    export default defineComponent({
-        name: 'App',
-        components: {TodosView}
-    });
-    
 </script>
 
 <template>
-    <TodosView />
+    <body>
+        <TodosView />
+    </body>
 </template>
 
 <style lang="scss">
