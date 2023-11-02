@@ -14,12 +14,17 @@
         },
         setup(_, context) {
 
-            function handleDelete(todoID: string) {
+            function onDelete(todoID: string) {
                 context.emit('onDelete', todoID)
             }
 
+            function onFinish(todoID: string) {
+                context.emit('onFinish', todoID)
+            }
+
             return {
-                handleDelete
+                onDelete,
+                onFinish
             }
         }
     })
@@ -31,7 +36,8 @@
             v-for="todo in todos" 
             :key="todo.id" 
             :todo="todo"
-            @onDelete="handleDelete" />
+            @onDelete="onDelete"
+            @onFinish="onFinish" />
     </section>
 </template>
 

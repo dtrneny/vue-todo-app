@@ -15,7 +15,7 @@
         setup(props, context) {
 
             function handleFinish() {
-                context.emit('onFinish');
+                context.emit('onFinish', props.todo?.id);
             }
 
             function handleDelete() {

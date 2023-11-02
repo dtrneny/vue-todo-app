@@ -1,6 +1,6 @@
 
 <script lang="ts">
-    import { defineComponent, reactive, toRefs, watch, ref } from 'vue';
+    import { defineComponent, watch, ref } from 'vue';
     import { v4 as uuidv4 } from 'uuid';
     import BasicButton from './BasicButton.vue';
     import BasicInputField from './BasicInputField.vue';
@@ -17,29 +17,24 @@
         setup(_, context) {
 
             const titleError = ref('');
+            const title = ref('')
+            const priority = ref('normal')
 
-            const formState = reactive({
-                title: '',
-                priority: 'normal'
-            })
-
-            watch(() => {
-                return {...formState}
-            }, (newValue, oldValue) => {
-                if(oldValue.title === '' && newValue.title !== '') titleError.value = ''
+            watch(title, (newValue, oldValue) => {
+                if(!oldValue && newValue) titleError.value = ''
             })
 
             function handleSubmit() {
 
-                if (!formState.title) {
+                if (!title.value) {
                     titleError.value = "Prosím vyplňte toto pole.";
                     return
                 }
 
                 const newTodo: Todo = {
-                    title: formState.title,
+                    title: title.value,
                     id: uuidv4(),
-                    priority: formState.priority as "low" | "normal" | "high",
+                    priority: priority.value as "low" | "normal" | "high",
                     finished: false
                 }
 
@@ -51,10 +46,11 @@
             }
 
             return {
+                title,
+                priority,
+                titleError,
                 handleSubmit,
-                handleCancel,
-                ...toRefs(formState),
-                titleError
+                handleCancel
             }
         }
     })
